@@ -15,8 +15,23 @@ const ApplicantsTable = () => {
     const statusHandler = async (status, id) => {
         console.log('called');
         try {
+            // Retrieve the token from localStorage
+            const token = localStorage.getItem('token');
+            
+            // Set axios to send credentials (cookies)
             axios.defaults.withCredentials = true;
-            const res = await axios.post(`${APPLICATION_API_END_POINT}/status/${id}/update`, { status });
+    
+            // Send the request with the token in the Authorization header
+            const res = await axios.post(`${APPLICATION_API_END_POINT}/status/${id}/update`, 
+                { status }, 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,  // Add token here
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+    
             console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message);
@@ -24,8 +39,7 @@ const ApplicantsTable = () => {
         } catch (error) {
             toast.error(error.response.data.message);
         }
-    }
-
+    };
     return (
         <div>
             <Table>

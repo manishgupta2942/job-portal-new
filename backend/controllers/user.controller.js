@@ -92,11 +92,19 @@ export const login = async (req, res) => {
             profile: user.profile
         }
 
-        return res.status(200).cookie("token", token, { maxAge: 1 * 24 * 60 * 60 * 1000, httpsOnly: true, sameSite: 'strict' }).json({
-            message: `Welcome back ${user.fullname}`,
-            user,
-            success: true
+        return res.status(200)
+        .cookie("token", token, {
+          maxAge: 1 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+          sameSite: 'strict',
+          secure: process.env.NODE_ENV === 'production'
         })
+        .json({
+          message: `Welcome back ${user.fullname}`,
+          user,
+          token,  // Include token here
+          success: true
+        });
     } catch (error) {
         console.log(error);
     }

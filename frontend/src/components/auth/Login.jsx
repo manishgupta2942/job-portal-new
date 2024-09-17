@@ -29,25 +29,30 @@ const Login = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            dispatch(setLoading(true));
-            const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                withCredentials: true,
-            });
-            if (res.data.success) {
-                dispatch(setUser(res.data.user));
-                navigate("/");
-                toast.success(res.data.message);
-            }
+          dispatch(setLoading(true));
+          const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+            headers: {
+              "Content-Type": "application/json"
+            },
+            withCredentials: true,
+          });
+          
+          if (res.data.success) {
+            const token = res.data.token; 
+            console.log(token);
+            // Get token from response
+            localStorage.setItem("token", token);  // Store token in localStorage
+            dispatch(setUser(res.data.user));
+            navigate("/");
+            toast.success(res.data.message);
+          }
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+          console.log(error);
+          toast.error(error.response.data.message);
         } finally {
-            dispatch(setLoading(false));
+          dispatch(setLoading(false));
         }
-    }
+      };
     useEffect(()=>{
         if(user){
             navigate("/");

@@ -15,14 +15,28 @@ const Applicants = () => {
     useEffect(() => {
         const fetchAllApplicants = async () => {
             try {
-                const res = await axios.get(`${APPLICATION_API_END_POINT}/${params.id}/applicants`, { withCredentials: true });
+                // Retrieve the token from localStorage
+                const token = localStorage.getItem('token');
+                
+                // Send the request with the token in the Authorization header
+                const res = await axios.get(`${APPLICATION_API_END_POINT}/${params.id}/applicants`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,  // Add token here
+                        'Content-Type': 'application/json'
+                    },
+                    withCredentials: true  // Send credentials (cookies) if needed
+                });
+                
+                // Dispatch the result to the state
                 dispatch(setAllApplicants(res.data.job));
             } catch (error) {
                 console.log(error);
             }
-        }
+        };
+    
         fetchAllApplicants();
-    }, []);
+    }, []);  // Add params.id and dispatch as dependencies
+    
     return (
         <div>
             <Navbar />
